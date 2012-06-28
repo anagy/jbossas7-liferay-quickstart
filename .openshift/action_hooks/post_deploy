@@ -2,3 +2,7 @@
 # This is a simple post deploy hook executed after your application 
 # is deployed and started.  This script gets executed directly, so 
 # it could be python, php, ruby, etc.
+#create/recreate links
+ln -sf ${OPENSHIFT_DATA_DIR}ROOT.war ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
+#trigger deployment
+touch ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war.dodeploy

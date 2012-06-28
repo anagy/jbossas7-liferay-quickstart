@@ -30,14 +30,20 @@ fi
 if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
  then
    echo "Portal already deployed, updating portal-*.properties"
-   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${OPENSHIFT_DATA_DIR}/ROOT.war
-   echo "Portal properties/configuration successfully updated"
+   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${OPENSHIFT_DATA_DIR}
+   echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
+   rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
+   rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war.*   
  else
    echo "Downloading Liferay Portal : ${_LIFERAY_PORTAL_DEPLOYING}"
    cd ${OPENSHIFT_TMP_DIR}
    #Downlad the war
    wget -O ${_LIFERAY_PORTAL_DEPLOYING}  -v "http://sourceforge.net/projects/lportal/files/Liferay%20Portal/6.1.0%20GA1/${_LIFERAY_PORTAL_DEPLOYING}/download"
    #Go to deployments directory and unwar it
+   if [ -d ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war ]
+    then
+       rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
+   fi
    cd ${OPENSHIFT_DATA_DIR}
    if [ ! -d  ${OPENSHIFT_DATA_DIR}/ROOT.war ]
     then
@@ -53,9 +59,6 @@ if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
    echo "Update the custom configuration files like portal-*.properties, log4j-ext etc.,"
    cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${OPENSHIFT_DATA_DIR}
    echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
-   ln -sf ${OPENSHIFT_DATA_DIR}/ROOT.war ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
-   #trigger deployment
-   touch ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war.dodeploy
    #update the currently deployed war
    echo ${_LIFERAY_PORTAL_DEPLOYING} >> ${OPENSHIFT_DATA_DIR}/deployed-war-info
 fi
