@@ -96,6 +96,14 @@
                         <password>sa</password>
                     </security>
                 </datasource>
+	            <datasource jndi-name="java:/jdbc/LiferayPool" pool-name="LiferayPool" enabled="true" jta="true" use-java-context="true" use-ccm="true">
+                    <connection-url>jdbc:h2:${env.OPENSHIFT_DATA_DIR}/data/hsql/lportal</connection-url>
+                    <driver>h2</driver>
+                    <security>
+                        <user-name>sa</user-name>
+                        <password>sa</password>
+                    </security>
+                </datasource>               
                 <datasource jndi-name="java:jboss/datasources/MysqlDS" enabled="${mysql.enabled}" use-java-context="true" pool-name="MysqlDS">
                     <connection-url>jdbc:mysql://${env.OPENSHIFT_DB_HOST}:${env.OPENSHIFT_DB_PORT}/${env.OPENSHIFT_APP_NAME}</connection-url>
                     <driver>mysql</driver>

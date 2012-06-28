@@ -12,4 +12,3 @@
 # prevent your application from stopping cleanly or starting at all.
 # Application start and stop is subject to different timeouts
 # throughout the system.
-export JAVA_OPTS=" -server -Xmx664m -XX:MaxPermSize=256m -XX:+AggressiveOpts -Dorg.apache.tomcat.util.LOW_MEMORY=true -Dorg.jboss.resolver.warning=true -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8 -Djava.net.preferIPv4Stack=true -Djboss.node.name=${OPENSHIFT_GEAR_DNS} -Djgroups.bind_addr=${OPENSHIFT_INTERNAL_IP}"
