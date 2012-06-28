@@ -1,0 +1,64 @@
+#!/bin/bash
+# This is a simple build script and will be executed on your CI system if 
+# available.  Otherwise it will execute while your application is stopped
+# before the deploy step.  This script gets executed directly, so it
+# could be python, php, ruby, etc.
+
+#
+## What version of liferay is currently getting deployed
+#
+_LIFERAY_PORTAL_DEPLOYING=`head -1 $OPENSHIFT_REPO_DIR/.openshift/action_hooks/deploying-war-info`
+
+
+#
+## What version of liferay is already deployed
+#
+_LIFERAY_PORTAL_DEPLOYED=""
+
+#
+## The directory where all you customizations are placed things like portal-ext.properties, log4j-ext.xml etc.,
+#
+_CUSTOMIZATION_DIR="${OPENSHIFT_REPO_DIR}/customization"
+
+if [ -f ${OPENSHIFT_DATA_DIR}/deployed-war-info ]
+ then
+  _LIFERAY_PORTAL_DEPLOYED=`head -1 ${OPENSHIFT_DATA_DIR}/deployed-war-info`
+   echo "Last deployed WAR : ${_LIFERAY_PORTAL_DEPLOYED}"
+fi
+
+#Download the Liferay Portal War
+if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
+ then
+   echo "Portal already deployed, updating portal-*.properties"
+   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${OPENSHIFT_DATA_DIR}
+   echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
+   rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
+   rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war.*   
+ else
+   echo "Downloading Liferay Portal : ${_LIFERAY_PORTAL_DEPLOYING}"
+   cd ${OPENSHIFT_TMP_DIR}
+   #Downlad the war
+   wget -O ${_LIFERAY_PORTAL_DEPLOYING}  -v "http://sourceforge.net/projects/lportal/files/Liferay%20Portal/6.1.0%20GA1/${_LIFERAY_PORTAL_DEPLOYING}/download"
+   #Go to deployments directory and unwar it
+   if [ -d ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war ]
+    then
+       rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
+   fi
+   cd ${OPENSHIFT_DATA_DIR}
+   if [ ! -d  ${OPENSHIFT_DATA_DIR}/ROOT.war ]
+    then
+        mkdir ${OPENSHIFT_DATA_DIR}/ROOT.war
+   fi
+   cd ${OPENSHIFT_DATA_DIR}/ROOT.war
+   if [ -f ${OPENSHIFT_TMP_DIR}/${_LIFERAY_PORTAL_DEPLOYING} ]
+    then
+       echo "Extracting the Liferay Portal ${_LIFERAY_PORTAL_DEPLOYING} as default application ROOT.war"
+       jar -xvf ${OPENSHIFT_TMP_DIR}/${_LIFERAY_PORTAL_DEPLOYING}
+   fi
+   # update configurations
+   echo "Update the custom configuration files like portal-*.properties, log4j-ext etc.,"
+   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${OPENSHIFT_DATA_DIR}
+   echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
+   #update the currently deployed war
+   echo ${_LIFERAY_PORTAL_DEPLOYING} >> ${OPENSHIFT_DATA_DIR}/deployed-war-info
+fi
