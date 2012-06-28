@@ -41,9 +41,9 @@ Application Info
 	
 Remove the default ROOT.war application
 
-    The JBoss AS 7.1 or JBoss EAP 6.o applicaiton types will have a default ROOT application, to prevent it colliding with Liferay portal
-	which will be deployed as ROOT.war we need to delete the existing files to do that,
-	cd $Your-App-Name ( if you are not in the applicaiton REPO directory)
+The JBoss AS 7.1 or JBoss EAP 6.o application type will have a default ROOT application, to prevent it colliding with Liferay portal which will be deployed as ROOT.war we need to delete the existing files to do that,
+
+	 cd $Your-App-Name ( if you are not in the applicaiton REPO directory)
      rm -rf pom.xml
      rm -rf src
 
