@@ -1,3 +1,5 @@
+										!!!! WARNING WORK IN PROGRESS!!!!
+
 Liferay on OpenShift
 ===================
 
