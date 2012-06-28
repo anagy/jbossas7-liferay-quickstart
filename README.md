@@ -17,7 +17,7 @@ Create an account at http://openshift.redhat.com/
 
 Create a JBoss AS 7.1 application
 
-    rhc app create -a lportal61 -t jbossas-7
+    rhc app create -a lportal61 -t jbossas-7 -g medium
 
 Add MySQL support to your application
 
