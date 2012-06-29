@@ -2,9 +2,9 @@ Liferay on OpenShift
 ===================
 
 This git repository helps you get up and running quickly with Liferay Portal installation
-on OpenShift.  The backend database is MySQL and the database name is the
+on OpenShift.  By default the backend database is MySQL and the database name is the
 same as your application name (using $_ENV['OPENSHIFT_APP_NAME']).  You can name
-your application whatever you want.  However, per default the name of the database
+your application and database name to whatever you want.  However, per default the name of the database
 will always match the application so you might have to update *.openshift/action_hooks/deploy*.
 
 
@@ -32,7 +32,7 @@ Add DB support to your application
 Add this upstream liferay-portal-quickstart repo
 
     cd $Your-App-Name
-    git remote add upstream -m master git://github.com/kameshsampath/liferay-portal-quickstart
+    git remote add upstream -m master git://github.com/kameshsampath/jbossas7-liferay-quickstart.git
     git pull -s recursive -X theirs upstream master
 	
 Application Info
@@ -65,11 +65,13 @@ Default Credentials
 Repo layout
 -----------
 
-*customization/* - All Liferay Portal customizations
+* customization/* - All Liferay Portal customizations
 		portal-ext.properties - the standard customizations that will be done for Liferay installations
 		jboss-deployment-structure.xml - the updated jboss-deployment-structure for JBoss As 7.1
-*.openshift/action_hooks/deploy* - Script that gets run every push deploying your application
-*.openshift/action_hooks/deploying-war-info* - the war file of liferay that will be deployed
+		
+* .openshift/action_hooks/deploy* - Script that gets run every push deploying your application
+
+* .openshift/action_hooks/deploying-war-info* - the war file of liferay that will be deployed
 
 Liferay Portal Database configuration
 -------------------------------------
