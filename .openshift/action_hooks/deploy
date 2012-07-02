@@ -59,6 +59,13 @@ else
     echo "Database found, skipping import."
 fi
 
+
+#
+## Liferay Portal deployment directory, its the core portal and not the plugins
+#
+
+_LIFERAY_PORTAL_DEPLOY_DIR="${OPENSHIFT_DATA_DIR}liferay"
+
 touch ${_LIFERAY_PORTAL_DEPLOY_DIR}/ROOT.war.dodeploy
 
 $OPENSHIFT_GEAR_CTL_SCRIPT stop
