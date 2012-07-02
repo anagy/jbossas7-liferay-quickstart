@@ -47,7 +47,7 @@ if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
  then
    echo "Portal already deployed, updating portal-*.properties"
    cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${_LIFERAY_PORTAL_DEPLOY_DIR}
-   echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
+   echo "Portal properties/configuration successfully updated, please access the portal after 2-5 minutes"
  else
    echo "Downloading Liferay Portal : ${_LIFERAY_PORTAL_DEPLOYING}"
    cd ${OPENSHIFT_TMP_DIR}
