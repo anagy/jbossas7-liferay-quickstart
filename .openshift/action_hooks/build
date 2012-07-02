@@ -16,6 +16,22 @@ _LIFERAY_PORTAL_DEPLOYING=`head -1 $OPENSHIFT_REPO_DIR/.openshift/action_hooks/d
 _LIFERAY_PORTAL_DEPLOYED=""
 
 #
+## Liferay Portal deployment directory, its the core portal and not the plugins
+#
+
+_LIFERAY_PORTAL_DEPLOY_DIR="${OPENSHIFT_DATA_DIR}liferay"
+
+#
+## Create the directory if it does not exist
+#
+if [ ! -d ${_LIFERAY_PORTAL_DEPLOY_DIR} ]
+ then
+   echo "Creating Liferay Portal Dir ${_LIFERAY_PORTAL_DEPLOY_DIR}"
+   mkdir ${_LIFERAY_PORTAL_DEPLOY_DIR}
+   mkdir ${_LIFERAY_PORTAL_DEPLOY_DIR}/ROOT.war
+fi
+
+#
 ## The directory where all you customizations are placed things like portal-ext.properties, log4j-ext.xml etc.,
 #
 _CUSTOMIZATION_DIR="${OPENSHIFT_REPO_DIR}/customization"
@@ -30,26 +46,15 @@ fi
 if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
  then
    echo "Portal already deployed, updating portal-*.properties"
-   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${OPENSHIFT_DATA_DIR}
+   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${_LIFERAY_PORTAL_DEPLOY_DIR}
+   touch ${_LIFERAY_PORTAL_DEPLOY_DIR}/ROOT.war.dodeploy
    echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
-   rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
-   rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war.*   
  else
    echo "Downloading Liferay Portal : ${_LIFERAY_PORTAL_DEPLOYING}"
    cd ${OPENSHIFT_TMP_DIR}
    #Downlad the war
    wget -O ${_LIFERAY_PORTAL_DEPLOYING}  -v "http://sourceforge.net/projects/lportal/files/Liferay%20Portal/6.1.0%20GA1/${_LIFERAY_PORTAL_DEPLOYING}/download"
-   #Go to deployments directory and unwar it
-   if [ -d ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war ]
-    then
-       rm -rf ${OPENSHIFT_GEAR_DIR}${OPENSHIFT_GEAR_TYPE}/standalone/deployments/ROOT.war
-   fi
-   cd ${OPENSHIFT_DATA_DIR}
-   if [ ! -d  ${OPENSHIFT_DATA_DIR}/ROOT.war ]
-    then
-        mkdir ${OPENSHIFT_DATA_DIR}/ROOT.war
-   fi
-   cd ${OPENSHIFT_DATA_DIR}/ROOT.war
+   cd ${_LIFERAY_PORTAL_DEPLOY_DIR}/ROOT.war
    if [ -f ${OPENSHIFT_TMP_DIR}/${_LIFERAY_PORTAL_DEPLOYING} ]
     then
        echo "Extracting the Liferay Portal ${_LIFERAY_PORTAL_DEPLOYING} as default application ROOT.war"
@@ -57,7 +62,8 @@ if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
    fi
    # update configurations
    echo "Update the custom configuration files like portal-*.properties, log4j-ext etc.,"
-   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${OPENSHIFT_DATA_DIR}
+   cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${_LIFERAY_PORTAL_DEPLOY_DIR}
+   touch ${_LIFERAY_PORTAL_DEPLOY_DIR}/ROOT.war.dodeploy
    echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
    #update the currently deployed war
    echo ${_LIFERAY_PORTAL_DEPLOYING} >> ${OPENSHIFT_DATA_DIR}/deployed-war-info
