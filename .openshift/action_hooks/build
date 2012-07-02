@@ -47,7 +47,6 @@ if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
  then
    echo "Portal already deployed, updating portal-*.properties"
    cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${_LIFERAY_PORTAL_DEPLOY_DIR}
-   touch ${_LIFERAY_PORTAL_DEPLOY_DIR}/ROOT.war.dodeploy
    echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
  else
    echo "Downloading Liferay Portal : ${_LIFERAY_PORTAL_DEPLOYING}"
@@ -63,8 +62,6 @@ if [ "${_LIFERAY_PORTAL_DEPLOYING}" = "${_LIFERAY_PORTAL_DEPLOYED}" ]
    # update configurations
    echo "Update the custom configuration files like portal-*.properties, log4j-ext etc.,"
    cp -ra ${_CUSTOMIZATION_DIR}/ROOT.war ${_LIFERAY_PORTAL_DEPLOY_DIR}
-   touch ${_LIFERAY_PORTAL_DEPLOY_DIR}/ROOT.war.dodeploy
-   echo "Portal properties/configuration successfully updated, please access the portal after 5 minutes"
    #update the currently deployed war
    echo ${_LIFERAY_PORTAL_DEPLOYING} >> ${OPENSHIFT_DATA_DIR}/deployed-war-info
 fi
